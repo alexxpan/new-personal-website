@@ -1,0 +1,48 @@
+.header {
+    text-align: center;
+    padding-bottom: 5rem;
+}
+
+.logo-home {
+    height: 8rem;
+}
+
+.name {
+    font-size: 2rem;
+    margin-top: 0rem;
+}
+
+.nav-menu {
+    font-size: 4rem;
+}
+
+.nav-menu:after {
+    content: "";
+    clear: both;
+}
+
+.column {
+    float: left;
+    width: 50%;
+    text-align: center;
+}
+
+.nav-link-1 {
+    color: #7D95EF;
+    text-decoration: none;
+}
+
+.nav-link-1:hover {
+    text-decoration: line-through;
+    font-style: italic;
+}
+
+.nav-link-2 {
+    color: #75C0F9;
+    text-decoration: none;
+}
+
+.nav-link-2:hover {
+    text-decoration: line-through;
+    font-style: italic;
+}
