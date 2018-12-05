@@ -1,48 +1,27 @@
-.header {
-    text-align: center;
-    padding-bottom: 5rem;
-}
-
-.logo-home {
-    height: 8rem;
+* {
+    font-family: 'Cormorant Garamond', 'serif';
 }
 
 .name {
-    font-size: 2rem;
-    margin-top: 0rem;
+    margin-left: 2rem;
+    margin-bottom: 4rem;
+    font-size: 3rem;
+    font-family: 'Roboto Mono', monospace;
 }
 
 .nav-menu {
-    font-size: 4rem;
+    margin-left: 2rem;
+    font-size: 14rem;
+    line-height: 85%;
 }
 
-.nav-menu:after {
-    content: "";
-    clear: both;
-}
-
-.column {
-    float: left;
-    width: 50%;
-    text-align: center;
-}
-
-.nav-link-1 {
-    color: #7D95EF;
+.nav-link {
+    color: black;
     text-decoration: none;
+    margin-bottom: 0rem;
 }
 
-.nav-link-1:hover {
-    text-decoration: line-through;
-    font-style: italic;
-}
-
-.nav-link-2 {
-    color: #75C0F9;
-    text-decoration: none;
-}
-
-.nav-link-2:hover {
+.nav-link:hover {
     text-decoration: line-through;
     font-style: italic;
 }
