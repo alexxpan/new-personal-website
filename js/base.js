@@ -5,6 +5,8 @@ var collapsibles = document.getElementsByClassName("collapsible");
 for (var i = 0; i < collapsibles.length; i++) {
     collapsibles[i].addEventListener("click", function() {
         var content = this.nextElementSibling;
+        // Show that the collapsible is open or closed
+        this.classList.toggle("is-open");
         // Toggle content between 0 and max height when clicked
         if (parseInt(content.style.maxHeight) > 0){
             content.style.maxHeight = 0;

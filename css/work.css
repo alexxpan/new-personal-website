@@ -11,6 +11,17 @@
     background: none;
     border: none;
     cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+.is-open::after {
+    content: '\00d7';
+    float: right;
+}
+
+.is-open:hover::after {
+    font-style: normal;
 }
 
 .content {
@@ -19,4 +30,5 @@
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.5s ease-out;
+    margin-left: 1rem;
 }
