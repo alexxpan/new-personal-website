@@ -6,11 +6,14 @@
 }
 
 .nav-menu {
-    /* font-family: 'Cormorant Garamond', 'serif'; */
     font-family: 'Open Sans', sans-serif;
     margin-left: 2rem;
-    font-size: 9rem;
+    font-size: 12rem;
     line-height: 90%;
+}
+
+.nav-menu-small {
+    font-size: 9rem;
 }
 
 .nav-item {
