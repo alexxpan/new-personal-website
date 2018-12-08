@@ -33,3 +33,46 @@
     margin-left: 1rem;
     line-height: normal;
 }
+
+.frisbee-container {
+    display: inline-block;
+    position: relative;
+    height: 14rem;
+    max-width: 14rem;
+}
+
+.frisbee-logo {
+    height: 14rem;
+    opacity: 1;
+    transition: .5s ease;
+}
+
+.frisbee-text {
+    opacity: 0;
+    position: absolute;
+    transition: .5s ease;
+    text-align: center;
+    top: 5%;
+    font-family: 'Open Sans', sans-serif; 
+    width: 100%;
+    font-size: 1rem;
+}
+
+.frisbee-container:hover .frisbee-logo {
+    opacity: 0.1;
+}
+
+.frisbee-container:hover .frisbee-text {
+    opacity: 1;
+}
+
+.frisbee-link {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.design-link {
+    color: black;
+}
