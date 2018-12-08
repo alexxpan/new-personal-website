@@ -1,0 +1,185 @@
+<head>
+<title>Building a Pinhole Camera</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+	<h1 class='title'>CS 194-26: Image Manipulation and Computational Photography</h1>
+	<br>
+	<h2 class='title'>Building a Pinhole Camera</h2>
+	<p class='name'>By: Alex Pan (abq) and Brian Kooperberg (acd)</p>
+	<p class='name'><a href="http://inst.eecs.berkeley.edu/~cs194-26/fa17/hw/proj2-camera/index.html" target="_blank">Project Description Here</a></p>
+	<br>
+
+	<h2>Overview</h2>
+	<p>The pinhole camera (otherwise known as 'camera obscura') is essentially a dark box with a pinhole on one face, and a screen on the opposite face. Light reflecting off an object is directed through the pinhole to the screen, and an inverted image of the object forms on the screen.</p>
+	<img src="demo/camera_obscura.jpg" alt="Camera Obscura" class="demo">
+	<br><br><br>
+
+	<h2>Approach</h2>
+	<p>For this project, we use a shoebox as our dark box. After taping the outsides to prevent light from leaking in from gaps other than the pinhole, we fixed up the inside of the box. We used white paper as the screen and the rest of the box insides with black paper.
+	<br><br>
+	In order to capture the image being reflected from the pinhole on to the screen, we poked the lens of a digital camera through the box and used it to take pictures. Because so little light comes through the pinhole, we had to use a long exposure time (20 seconds) in order to process the full image. *Special thanks to Rafael Castro for letting us borrow his digital camera.
+	<br><br>
+	Here are a few images of our pinhole camera:</p>
+	<img src="demo/camera_1.jpeg" alt="Camera Obscura" class="demo">
+	<img src="demo/camera_2.jpeg" alt="Camera Obscura" class="demo">
+	<img src="demo/camera_3.jpeg" alt="Camera Obscura" class="demo">
+	<br><br><br>
+
+	<h2>Demonstration</h2>
+	<p>To test the optimal pinhole size, we tried letting light through 4 different hole diameter sizes: 0.1mm, 1mm, 3mm, and 5mm. 
+
+	Because larger holes let in more light, we expect that images produced by large pinholes will be bright. With a larger pinhole size, the projected circle of confusion at the image plane is larger, meaning that the cone of light rays coming into the box do not come to a perfect focus. So, the larger the pinhole size, the less sharp the image will be. On the contrary, the smallest diameter pinholes only let a few light rays pass into the box, so they should create dark images. The light rays will also be able to focus at a smaller point, creating a crisper image.
+
+	Based on this, we expect the 5mm pinhole to give us the brightest, but blurriest image. Similarly, we expect the 0.1mm pinhole to produce the darkest, sharpest image. Here are a few different scenes where we tried using the pinhole camera. As you can see, the results are generally what we expected:</p>
+
+	<h3><i>Alex's Balcony</i></h3>
+	<br>
+
+	<div class="scene_normal">		
+		<img src="balcony/balcony_normal.jpg" alt="balcony normal" class="pinhole_image">
+		<p>Original Scene</p>
+	</div>
+
+	<div class="scene">
+		<img src="balcony/balcony_01mm.jpg" alt="balcony .1mm" class="pinhole_image">
+		<p>0.1mm</p>
+	</div>
+
+	<div class="scene">
+		<img src="balcony/balcony_1mm.jpg" alt="balcony 1mm" class="pinhole_image">
+		<p>1mm</p>
+	</div>
+
+	<div class="scene">
+		<img src="balcony/balcony_3mm.jpg" alt="balcony 3mm" class="pinhole_image">
+		<p>3mm</p>
+	</div>
+
+	<div class="scene">
+		<img src="balcony/balcony_5mm.jpg" alt="balcony 5mm" class="pinhole_image">
+		<p>5mm</p>
+	</div>
+
+	<h3><i>Cal Ultimate Frisbee</i></h3>
+	<br>
+
+	<div class="scene_normal">		
+		<img src="frisbee/frisbee_normal.jpg" alt="frisbee normal" class="pinhole_image">
+		<p>Original Scene</p>
+	</div>
+
+	<div class="scene">
+		<img src="frisbee/frisbee_01mm.jpg" alt="frisbee .1mm" class="pinhole_image">
+		<p>0.1mm</p>
+	</div>
+
+	<div class="scene">
+		<img src="frisbee/frisbee_1mm.jpg" alt="frisbee 1mm" class="pinhole_image">
+		<p>1mm</p>
+	</div>
+
+	<div class="scene">
+		<img src="frisbee/frisbee_3mm.jpg" alt="frisbee 3mm" class="pinhole_image">
+		<p>3mm</p>
+	</div>
+
+	<div class="scene">
+		<img src="frisbee/frisbee_5mm.jpg" alt="frisbee 5mm" class="pinhole_image">
+		<p>5mm</p>
+	</div>
+	<br><br><br>
+
+	<h2>Observations</h2>
+	<p>From the pictures above, it is impressive to see that the pinhole camera actually does a very good job of capturing a scene (with the right pinhole size). With the given exposure length of 20 seconds, the optimal pinhole diameter seems to be 3mm. The 0.1mm pinhole was too small to let enough light in, so the pictures were almost completely dark. The 1mm pinhole created very sharp images, but the result images were a bit too dark and obscured a decent amount of the scene. The 5mm pinhole was way too bright and blurry. 3mm was a happy medium between bright and in-focus </p>
+
+	<h2>Additional Images</h2>
+	<p>Now that we know that the optimal pinhole size is 3mm (at least for our specific pinhole camera), here are some more pictures with our pinhole camera!</p>
+
+	<div class="scene">
+		<img src="additional/hearst.jpeg" alt="Hearst Mining Circle" class="pinhole_image2">
+		<p>Hearst Mining Circle</p>
+	</div>
+
+	<div class="scene">
+		<img src="additional/engineering.jpeg" alt="Engineering Building" class="pinhole_image2">
+		<p>Engineering Building</p>
+	</div>
+
+	<div class="scene">
+		<img src="additional/two_cars.jpeg" alt="Two cars" class="pinhole_image2">
+		<p>Two Cars</p>
+	</div>
+
+	<div class="scene">
+		<img src="additional/campanile_base.jpeg" alt="Campanile Base" class="pinhole_image2">
+		<p>Campanile Base</p>
+	</div>
+	
+	<br><br><br>
+
+	<h2>Bells and Whistles</h2>
+	<h3><i>Light Painting</i></h3>
+	<p>Given that we had a digital camera on our hands, we wanted to experiment and see what light painting was all about. Light painting refers to the effect created by taking a long exposure photograph while moving a hand-held light source. The long exposure time allows the image to capture the light source as it moves around, creating an effect where the light source almost acts like a pen that you can draw with.</p>
+
+	<p>For our light sources, we used our phone flashlights and a light-up frisbee. Our exposure time was 15 seconds. Here are a few snapshots of us trying out different light painting effects:</p>
+	<br>
+
+	<div class="scene">
+		<img src="light_painting/alex.jpeg" alt="Alex" class="light_painting_image">
+		<p>Alex drawing Alex's name</p>
+	</div>
+
+	<div class="scene">
+		<img src="light_painting/brian.jpeg" alt="Brian" class="light_painting_image">
+		<p>Alex drawing Brian's name</p>
+	</div>
+
+	<div class="scene">
+		<img src="light_painting/cal.jpeg" alt="Cal" class="light_painting_image">
+		<p>The number one public university</p>
+	</div>
+
+	<div class="scene">
+		<img src="light_painting/efros.jpeg" alt="Efros" class="light_painting_image">
+		<p>Our mighty professor Efros</p>
+	</div>
+
+	<div class="scene">
+		<img src="light_painting/angel.jpeg" alt="Brian, the angel" class="light_painting_image">
+		<p>Brian, the angel</p>
+	</div>
+
+	<div class="scene">
+		<img src="light_painting/devil.jpeg" alt="Alex, the devil" class="light_painting_image">
+		<p>Alex, the devil</p>
+	</div>
+
+	<div class="scene">
+		<img src="light_painting/snake.jpeg" alt="Sname" class="light_painting_image">
+		<p>A long and windy snake</p>
+	</div>
+
+	<div class="scene">
+		<img src="light_painting/single_throw.jpeg" alt="Single throw" class="light_painting_image">
+		<p>Throwing the frisbee</p>
+	</div>
+
+	<div class="scene">
+		<img src="light_painting/three_throws.jpeg" alt="Three throws" class="light_painting_image">
+		<p>Throwing the frisbee three times</p>
+	</div>
+
+
+	
+
+</body>
+
+
+
+
+
+
+
+

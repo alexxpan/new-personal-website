@@ -26,6 +26,7 @@
 
 .content {
     font-family: 'Roboto Mono', monospace;
+    font-weight: 100;
     font-size: 1.5rem;
     max-height: 0;
     overflow: hidden;
@@ -73,6 +74,23 @@
     font-size: 1.5rem;
 }
 
-a {
-    color: black;
+.project-pic {
+    width: 30rem;
+    float: left;
+    margin-right: 3rem;
+}
+
+.project-text {
+    width: auto;
+    overflow: hidden;
+    margin-right: 2rem;
+}
+
+.bold {
+    font-weight: 400;
+}
+
+.project::after {
+    content: "";
+    clear: both;
 }

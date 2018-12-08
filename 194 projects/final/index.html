@@ -1,0 +1,431 @@
+<head>
+<title>Fake Miniatures, Dolly Zoom, and Seam Carving</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+	<h1 class='title'>CS 194-26: Image Manipulation and Computational Photography</h1>
+	<br>
+	<h2 class='title'>Final Project</h2>
+	<h3 class='title'><a href="#part1">Fake Miniatures</a>, <a href="#part2">Dolly Zoom</a>, and <a href="#part3">Seam Carving</a></h3>
+	<p class='name'>By: Alex Pan (abq) and Brian Kooperberg (acd)</p>
+	<p class='name'>
+		Project descriptions
+		<a href="http://graphics.cs.cmu.edu/courses/15-463/2010_spring/hw/proj2/index.html" target="_blank">here</a>,
+		<a href="http://graphics.cs.cmu.edu/courses/15-463/2010_spring/hw/proj0/" target="_blank">here</a>, and
+		<a href="https://inst.eecs.berkeley.edu/~cs194-26/fa17/hw/proj4-seamcarving/index.html" target="_blank">here</a>
+	</p>
+	<br>
+
+	<hr>
+	<h1 id="part1"><i>Fake Miniatures</i></h1>
+	<h2>Overview</h2>
+	<p>In this first part of the project, we are creating <a href="https://en.wikipedia.org/wiki/Miniature_faking">fake miniatures</a>. This refers to taking a regular photograph of a location or an image, and simulating the effect of selective focus cameras to make the subject look smaller than it is. This models the technique known as <a href="https://en.wikipedia.org/wiki/Tilt–shift_photography">tilt-shift photography</a>, and can be digitally simulated through a few simple steps.</p>
+
+	<h2>Focus Line</h2>
+	<p>From a 2D image, it is technically impossible to recover depth information. Rather than accurately defining at what distance objects are, we can use a good heuristic that objects on the same straight line are at the same depth. We can manually pick a focus line for the image we are working with, and whatever lies on the focus line will be depicted to look miniature. This line can be vertical or horizontal, depending on what we want. In the image below, you can see where we've defined the focus line based on the photo's subjects.</p>
+	<div class="output">
+		<img src="imgs/pier.jpg" alt="" class="demo">
+		<p>Original image</p>
+	</div>
+	<div class="output">
+		<img src="demo/pier_focus.jpg" alt="" class="demo">
+		<p>Focus line</p>
+	</div>
+	<br>
+
+	<h2>Depth of Field</h2>
+	<p>Now that we know where the focus line is, we have to determine the depth of field. The depth of field is the part of the image in focus, centered around the focus line. Since we are faking the process of focusing an actual camera, we can specify what the depth of field should be. In simple situations, the DOF is just a rectangle around the focus line. By defining the width of this rectangle, we can pick an adequate depth of field for each miniature (seen below).</p>
+	<div class="output">
+		<img src="demo/pier_focus.jpg" alt="" class="demo">
+		<p>Focus line (red)</p>
+	</div>
+	<div class="output">
+		<img src="demo/pier_dof.jpg" alt="" class="demo">
+		<p>Focus line with depth of field (blue, 250px wide)</p>
+	</div>
+	<br>
+
+	<h2>Blurring</h2>
+	<p>The actual 'miniature' effect is created by blurring other parts of the image. The DOF region should remain focus, but everything other than that should be incrementally blurred. Regions of the iamge further away from the DOF are assumed to be further in real life, so they should have blur. To do this, we incrementally apply Gaussian filters (with specified sigma) to the image depending on distance away from the DOF until the desired effect is acheived.</p> 
+	<div class="output">
+		<img src="demo/pier_blur.jpg" alt="" class="demo">
+		<p>Blur regions</p>
+	</div>
+	<br>
+
+	<h2>Results</h2>
+	<p>After doing all of the steps above, we end up with completed fake miniatures! To increase the illusion of the miniature, we also boost the saturation of the image. Below, we will show a few finished results. All of these outputs have different focus lines and depth of fields.</p>
+	<h3><i>Pier (<a href="https://www.flickr.com/photos/federicoporta/33379295882/in/photolist-SRBBKq-nziuoR-34kC44-oh3Vmc-4RSk6e-55hSu9-UpJr3E-aipt3L-o5NWYh-cFhUYA-oig4Ae-iEKMLV-SJ1Hpe-nfamqN-mZyrt4-4PqicM-acX5Ph-UBeSEr-assKZ8-35spUH-pYtMyy-VP9C9M-849WLV-oYKQjd-asb8aN-dAJcYr-U5c6Uy-5EHdX1-Xw5u42-a7jgw6-pdpG84-21oGhTL-UmWv7o-ZyJ4s1-pAhm6o-9MBUxP-bs7UNa-obwhAc-S4EEqY-UzSVuM-pimwq3-f73Nvi-SLy5wm-asiJMU-x2rBCz-ZLcHh1-pTRZyx-rzup1C-HWQfVz-8J9NYS">source</a>)</i></h3>
+	<div class="output">
+		<img src="imgs/pier.jpg" alt="" class="demo2">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="imgs/mini_pier.jpg" alt="" class="demo2">
+		<p>Fake Miniature</p>
+	</div>
+	<br>
+	
+	<h3><i>Villages in France (<a href="https://www.flickr.com/photos/153090347@N03/35420848783/in/photolist-VY27in-7Pp9cs-88QASU-4VnUtm-Qy4z4M-X6XPVd-p1Du45-k4Ff4Y-UEngpU-SBb95k-69UFCH-Yp2AGx-kiFrKQ-a9nxqS-qd19CD-T4noK-gAfeAS-fCdyfw-ov7Ja7-dRFs1P-nm2oHF-FvL7Zy-5UtsUx-UQDQhs-eRVJhK-2qdvmt-xY8Uk-X7Qubv-JxpEi-4kgPDg-g1hW9V-ouvTdC-S7aZqi-4syTeG-bWy3J5-poTysR-rAr7Ld-nAVMr1-eBqzsh-WeyN3o-CWmBRf-oYbTT2-fM8coG-63taL2-nXXxGg-EsWXvH-mpV4fY-kiV6r4-8tNPEW-737CCa">source</a>)</i></h3>
+	<div class="output">
+		<img src="imgs/france.jpg" alt="" class="demo2">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="imgs/mini_france.jpg" alt="" class="demo2">
+		<p>Fake Miniature</p>
+	</div>
+	<br>
+
+	<h3><i>Forest Trail (taken by Alex)</i></h3>
+	<div class="output">
+		<img src="imgs/forest.jpg" alt="" class="demo3">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="imgs/mini_forest.jpg" alt="" class="demo3">
+		<p>Fake Miniature</p>
+	</div>
+	<br>
+
+	<h3><i>Times Square (taken by Alex)</i></h3>
+	<div class="output">
+		<img src="imgs/new_york.jpg" alt="" class="demo">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="imgs/mini_new_york.jpg" alt="" class="demo">
+		<p>Fake Miniature</p>
+	</div>
+	<br>
+
+	<h2>Bells and Whistles: Blended Fake Miniatures</h2>
+	<p>For bells and whistles, we thought it would be cool to incorporate ideas from previous projects. More specifically, we explored how to use blending techniques like poisson blending (from project 3) in our fake miniatures. The purpose of fake miniatures is to create a surreal, tiny appearance of a specific subject in an image. If we use poisson blending, we can insert anything we want to into the image and make a fake miniature out of it. This gives us endless options to make miniatures out of, and well-thought-out ideas can turn into very realistic and creative fake miniatures.</p>
+	<p>The code used for this is included with project 3. Below is an example of a blended fake miniature:</p>
+	<h3><i>A Boat In Prague</i></h3>
+	<div class="output">
+		<img src="imgs/boat-prague/prague.jpg" alt="" class="demo">
+		<p>Source Image (<a href="https://www.flickr.com/photos/antonguglya/8157863744/in/photolist-dqTbFb-dKbqXg-7Rx4VV-amm3GV-YDc97y-dGTZTW-oB6LLv-dbp7LD-2tYCc5-eJ8HE3-874UnC-nTY5qV-57JrbX-9uhm1b-9eDusD-21mTJo-5oy7ae-cWqMSY-hwofT8-5mr8S7-5vhHNB-b84j1c-4f3jtB-3ZAdo6-ajUmo-yuvVYk-oAexbo-RhHB8w-PtMrFc-PramdU-vJ8KxV-CfrfEv-M7ZsL9-D4gwb1-DAFQgF-y39KJq-BHXJ22-yCxQ9m-rzesqu-o6iZjB-UiF9bP-9nJKmH-QNyftt-cqAQ57-8BWMS5-k76HDX-oTrJWQ-eig4eM-ejj2N4-p8cnPA">source</a>)</p>
+	</div>
+	<div class="output">
+		<img src="imgs/boat-prague/boat.jpg" alt="" class="demo5">
+		<p>Target Image</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="imgs/boat-prague/blended.jpg" alt="" class="demo">
+		<p>Blended Image</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="imgs/boat-prague/mini_blended.jpg" alt="" class="demo">
+		<p>Fake Miniature Blended Image</p>
+	</div>
+
+	<hr>
+	<h1 id="part2"><i>Dolly Zoom</i></h1>
+	<h2>Overview</h2>
+	<p>The next part of the project explores a famous in-camera effect called the <a href="https://en.wikipedia.org/wiki/Dolly_zoom">dolly zoom</a>. It is also known as the "Vertigo shot", referencing a famous scene in Hitchock's movie Vertigo. <a href="https://www.youtube.com/watch?v=sKJeTaIEldM">Here</a> is a video demonstrating various examples of this effect.</p>
+
+	<h2>Implementation</h2>
+	<p>Unlike the previous part of the project, the dolly zoom effect is acheived using the camera alone. To simulate the effect, the camera simultaneously zooms in and dollies (moves) away from the subject. By adjusting the field of view while moving, the subject being captured stays the same size in the frame throughout. Different variations of this can be done depending on the desired effect (moving forwards instead of backwards, zooming out instead of in, etc).</p>
+
+	<h2>Results</h2>
+	<p>Here are a few images and gifs (part of bells & whistles) of our attempts at the dolly zoom. We took the traditional approach in making these: zooming in while moving the camera backwards. It was hard to replicate the effect perfectly without an actual camera dolly, but we think our results turned out pretty nicely!</p>
+	<h3><i>Basketball</i></h3>
+	<div class="output">
+		<img src="dolly_zoom/ball1.jpg" alt="" class="demo4">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/ball2.jpg" alt="" class="demo4">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/ball3.jpg" alt="" class="demo4">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/ball4.jpg" alt="" class="demo4">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/ball5.jpg" alt="" class="demo4">
+	</div>
+	<br>
+	<div class="output">
+		<img src="dolly_zoom/ball.gif" alt="" class="demo">
+	</div>
+	
+	<h3><i>Brian</i></h3>
+	<div class="output">
+		<img src="dolly_zoom/brian1.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/brian2.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/brian3.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/brian4.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/brian5.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/brian6.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/brian7.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/brian8.jpg" alt="" class="demo5">
+	</div>
+	<br>
+	<div class="output">
+		<img src="dolly_zoom/brian.gif" alt="" class="demo">
+	</div>
+
+	<h3><i>Alex</i></h3>
+	<div class="output">
+		<img src="dolly_zoom/alex1.jpg" alt="" class="demo6">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/alex2.jpg" alt="" class="demo6">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/alex3.jpg" alt="" class="demo6">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/alex4.jpg" alt="" class="demo6">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/alex5.jpg" alt="" class="demo6">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/alex6.jpg" alt="" class="demo6">
+	</div>
+	<br>
+	<div class="output">
+		<img src="dolly_zoom/alex.gif" alt="" class="demo">
+	</div>
+
+	<h2>Bells and Whistles: Technique Variations</h2>
+	<p>Besides providing gifs for our images, we also did some extra bells and whistles regarding different combinations of moving the subject and camera. Below, we should these results labeled by the technique we used to create them:</p>
+	<h3><i>Zooming the camera out while moving the camera closer</i></h3>
+	<p>This combination is the opposite of the one we did above. We start all the way zoomed in, and slowly zoom out as we move the camera closer to the subject. It achieves a similar but reversed effect; whether you would use this one or the normal combination depends on what the movie scene is trying to do.</p>
+	<div class="output">
+		<img src="dolly_zoom/pins1.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/pins2.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/pins3.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/pins4.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/pins5.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/pins6.jpg" alt="" class="demo5">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/pins7.jpg" alt="" class="demo5">
+	</div>
+	<br>
+	<div class="output">
+		<img src="dolly_zoom/pins.gif" alt="" class="demo">
+	</div>
+
+	<h3><i>Zooming the camera in while moving the subject back</i></h3>
+	<p>This combination resulted in a pretty good result. One noticeably difference on our end was that in this case, it was much easier to move the subject than the camera. All we had to do was push the shoe back a few inches between each picture, which required us to be less delicate than if we were to slide the expensive camera. This approach seems to be good when the subject is something easily movable, like a shoe or a small object. Obviously, it wouldn't be feasible if we were taking pictures of a boulder or something like that.</p>
+	<div class="output">
+		<img src="dolly_zoom/shoe1.jpg" alt="" class="demo4">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/shoe2.jpg" alt="" class="demo4">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/shoe3.jpg" alt="" class="demo4">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/shoe4.jpg" alt="" class="demo4">
+	</div>
+	<div class="output">
+		<img src="dolly_zoom/shoe5.jpg" alt="" class="demo4">
+	</div>
+	<br>
+	<div class="output">
+		<img src="dolly_zoom/shoe.gif" alt="" class="demo">
+	</div>
+	<br>
+
+	<h2>Bells and Whistles: Video Dolly Zoom</h2>
+	<p>Obviously, the results of our dolly zoom were choppy because we stitched together individual images. In an attempt to make it smoother, we tried using video instead. We found out that this was really hard - it involved holding the camera completely level while walking backwards. In order for it to look right, we also had to make sure to zoom smoothly at the same speed we walk backwards. The hardest part was trying to keep the camera steady as we moved, and as you can see our footage was very shaky. The results would have been better if we had a dolly or even just a skateboard to stand on, but it was fun to try it out.</p>
+
+	<h3><i>Basketball Hoop</i></h3>
+	<iframe width="650" height="500" src="https://www.youtube.com/embed/A2-MZ2_ndeo"></iframe>
+
+	<h3><i>Cone</i></h3>
+	<iframe width="650" height="500" src="https://www.youtube.com/embed/8P0opbL-B14"></iframe>
+	<br><br>
+
+	<hr>
+	<h1 id="part3"><i>Seam Carving</i></h1>
+	<h2>Overview</h2>
+	<p>In the last part of this project, we will explore the idea of <a href="https://en.wikipedia.org/wiki/Seam_carving">seam carving</a>. To give a brief description, the goal of seam carving is to shrink an image either horizontally or vertically. In order to preserve the integrity and content of the image, we can't just crop rows and columns out. Seam carving is a way of finding which pixels we can remove without changing the image itself.</p>
+ 
+	<h2>Process</h2>
+	<p>First, we define what a seam is. A vertical seam is a path of pixels connected from the top of the image to the bottom, with one pixel in each row. A horizontal seam is the same thing from the left side to the right, with one pixel in each column instead. Depending on which way we want to shrink the image, we take out each type of seam.</p>
+	<p>We pick which seams to take out based on the 'energy' of each pixel. For the energy function, we used the gradient function from Numpy and then compared it to the four pixels around it to find the energy. Then after we have each pixel's energy, we use dynamic programming to find the seam from top to bottom with the lowest cumulative energy (each pixel has to be within one pixel of the row before it in a seam). We remove this lowest energy seam, and repeat this process until the picture is the desired size.</p>
+
+	<p>
+	<h2>Results (Successful)</h2>
+	<p>Below, we show successful seam carving outputs for a variety of images. There are limited artifacts, and the resized images look comparable to the original. If you view the images on a full sized browser, you can clearly see the side-to-side size difference between the seam-carved images and the original.</p>
+	<h3><i>House (Jim McCann)</i></h3>
+	<div class="output">
+		<img src="./seamcarving/house.jpg" alt="">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="./seamcarving/vertical_100house.jpg" alt="">
+		<p>Vertical Cut (100 seams)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="./seamcarving/horizontal_100house.jpg" alt="">
+		<p>Horizontal Cut (100 seams)</p>
+	</div>
+	<br>
+
+	<h3><i>Northern (Jerry Fryer)</i></h3>
+	<div class="output">
+		<img src="./seamcarving/northern.jpg" alt="">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="./seamcarving/vertical_150northern.jpg" alt="">
+		<p>Vertical Cut (150 seams)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="./seamcarving/horizontal_150northern.jpg" alt="">
+		<p>Horizontal Cut (150 seams)</p>
+	</div>
+	<br>
+
+	<h3><i>Iceland House (Brian Kooperberg)</i></h3>
+	<div class="output">
+		<img src="./seamcarving/iceland.jpg" alt="">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="./seamcarving/vertical_150iceland.jpg" alt="">
+		<p>Vertical Cut (150 seams)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="./seamcarving/horizontal_150iceland.jpg" alt="">
+		<p>Horizontal Cut (150 seams)</p>
+	</div>
+	<br>
+
+	<h3><i>Halong Bay (alemarin)</i></h3>
+	<div class="output">
+		<img src="./seamcarving/halong.jpg" alt="" class="demo2">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="./seamcarving/vertical_125halong.jpg" alt="" class="demo2">
+		<p>Vertical Cut (125 seams)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="./seamcarving/horizontal_125halong.jpg" alt="" class="demo7">
+		<p>Horizontal Cut (125 seams)</p>
+	</div>
+	<br>
+
+	<h3><i>Winter Path (sebo23)</i></h3>
+	<div class="output">
+		<img src="./seamcarving/winter.jpg" alt="" class="demo2">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="./seamcarving/vertical_125winter.jpg" alt="" class="demo2">
+		<p>Vertical Cut (125 seams)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="./seamcarving/horizontal_125winter.jpg" alt="" class="demo8">
+		<p>Horizontal Cut (125 seams)</p>
+	</div>
+	<br>
+
+	<h3><i>Santorini (Maggie Meng)</i></h3>
+	<div class="output">
+		<img src="./seamcarving/santorini.jpg" alt="" class="demo2">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="./seamcarving/vertical_125santorini.jpg" alt="" class="demo2">
+		<p>Vertical Cut (125 seams)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="./seamcarving/horizontal_125santorini.jpg" alt="" class="demo9">
+		<p>Horizontal Cut (125 seams)</p>
+	</div>
+	<br>
+
+	<h2>Results (Failure)</h2>
+	<p>Seam carving isn't guaranteed to produce good results, and for certain images it is impossible to prevent artifacts. Here are a few examples of this below:
+
+	<h3><i>Brian and Alex (Rafael Castro)</i></h3>
+	<p>In this picture, we see that seam carving didn't work well and results in our bodies / faces significantly warped. This is because we take up a large portion of the image. Therefore, at an early time, the algorithm already cuts seams through us and messes up our shapes. It is very difficult for seam carving to work on an image with human faces, since any seams being removed will warp the person and be easy noticeable.</p>
+	<div class="output">
+		<img src="./seamcarving/ba.jpg" alt="" class="demo3">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="./seamcarving/horizontal_200ba.jpg" alt="" class="demo3">
+		<p>Horizontal Cut (200 seams)</p>
+	</div>
+	<br>
+
+	<h3><i>Polar Bear (Highland Adventures)</i></h3>
+	<p>Again, we see major artifacts in the image. The shadows on the snow create a bigger contrast than the difference between white snow and polar bear fur, so seams are taken out of the polar bear. The resulting effect creates distorted images, no matter which direction we cut the image from.</p>
+	<div class="output">
+		<img src="./seamcarving/polar.jpg" alt="" class="demo2">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="./seamcarving/vertical_175polar.jpg" alt="" class="demo2">
+		<p>Vertical Cut (175 seams)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="./seamcarving/horizontal_175polar.jpg" alt="" class="demo10">
+		<p>Horizontal Cut (175 seams)</p>
+	</div>
+	<br>
+
+	<h2>Bells and Whistles: Fast Computation</h2>
+	<p>In order to speed up the runtime of the algorithm, we divided it into two sections: a precompute and an online section which runs really quickly. To do this, we first calculate all of the seams to an arbitrary number (depending on how many seams we think we will want in the online section). Then, we write this to a file that is read in the online section into a list. This will tell us exactly where to carve. The online performance is a lot better (currently 20x faster, which would improve even more if we used bigger pictures) but the results are the same. Since our outputs are identical, we just included the set of pictures above. The code for fast computation can be found inside the submitted python file.<p>
+	</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

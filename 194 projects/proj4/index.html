@@ -1,0 +1,221 @@
+<head>
+<title>Face Morphing</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+	<h1 class='title'>CS 194-26: Image Manipulation and Computational Photography</h1>
+	<br>
+	<h2 class='title'>Face Morphing</h2>
+	<p class='name'>By: Alex Pan</p>
+	<p class='name'><a href="http://inst.eecs.berkeley.edu/~cs194-26/fa17/hw/proj4/index.html" target="_blank">Project Description Here</a></p>
+	<br>
+
+	<h2>Overview</h2>
+	<p>A morph is a simultaneous warp of the image shape and a cross-dissolve of the image colors. In this project, we will work to smoothly morph between two faces. We will also explore how face shape and color can be used to create an 'average face'.
+	</p>
+	<br><br>
+
+	<h2>Defining Correspondences</h2>
+	<p>Warping, as described above, is a two step process. Cross dissolving the image colors is the easy part, so we will discuss how to warp image shapes. Contents in images obvously can't match up exactly, so it is necessary to define feature points to create a smooth morph. These feature points, or correspondences, match up the two images' features and allow them to transform into each other. Given correspondences, we can create a triangular mesh for the image. When we do the actual warping later on, triangles in one image will turn into the corresponding triangles in the other image. We use a Delauney triangulation since it produces evenly sized triangles.</p>
+
+	<div class="output">
+		<img src="demo/me.jpg" alt="" class="demo">
+		<p>Picture of me</p>
+	</div>
+	<div class="output">
+		<img src="demo/points.jpg" alt="" class="demo">
+		<p>Correspondences</p>
+	</div>
+	<div class="output">
+		<img src="demo/mesh.jpg" alt="" class="demo">
+		<p>Triangular mesh</p>
+	</div>
+	<br><br>
+
+	<h2>Computing the 'Mid-way' Face</h2>
+	<p>To morph between the images, we need to define one triangulation that we will use for every step of the morph. In order to get the best triangulation throughout the morph, we will compute the Delaunay triangulation on the mid-way face: the mean of the two correspondence point sets. This will prevent potential triangle deformations, since the triangles will be evenly shaped in the middle of the warp.</p>
+	<br><br>
+
+	<h2>Calculating Affine Transformation Matrices</h2>
+	<p>Now, we will perform an inverse warp from the midway triangles to each original image's triangles. We do this by solving for the constants in the equation below. Since each triangle has three points, we can create a system of equation with six equations by using each x,y triangle point. The resulting matrix is the affine transformation matrix, which transforms one image's triangles into another.</p>
+	<img src="demo/affine.jpg" alt="" class="demo2">
+	<br><br>
+
+	<h2>Morphing Images</h2>
+	<p>Now that we know how to get affine matrices, we get the affine matrix for every triangle in the triangulation. We have a 'from' image that we want to morph into a 'to' image. For each pixel in the 'from' image, we find the triangle that it belongs in and that triangle's affine matrix. We then use it to calculate the new pixel's location if it were shaped like the 'to' image. The result of this will give us a morphed image. Below, we will show examples of two images and the result when we morph them into the 'mid-way' face.</p>
+	<h3><i>Me and Jeremy Lin</i></h3>
+	<div class="output">
+		<img src="morph_images/me.png" alt="" class="demo">
+		<p>Me</p>
+	</div>
+	<div class="output">
+		<img src="morph_images/jeremy.png" alt="" class="demo">
+		<p>Jeremy Lin</p>
+	</div>
+	<div class="output">
+		<img src="me_jeremy/pic22.jpg" alt="" class="demo">
+		<p>Our 'Mid-way' face</p>
+	</div>
+	<h3><i>George Clooney and Obama</i></h3>
+	<div class="output">
+		<img src="morph_images/george.jpg" alt="" class="demo">
+		<p>Me</p>
+	</div>
+	<div class="output">
+		<img src="morph_images/obama.jpg" alt="" class="demo">
+		<p>Jeremy Lin</p>
+	</div>
+	<div class="output">
+		<img src="george_obama/pic22.jpg" alt="" class="demo">
+		<p>Our 'Mid-way' face</p>
+	</div>
+	<br><br>
+
+	<h2>The Morph Sequence</h2>
+	<p>Now, we can create a smooth transition between the two images. We do this by defining a warp fraction and dissolve fraction, specifying how much of each picture to preserve in that step of the morph. Our morph consists of 45 frames, with the fraction in each frame being 0/45, 1/45, 2/45, and so on. Below, we will show the full morph sequence of the two examples we morphed above, in GIF format.</p>
+
+	<h3><i>Jeremy Pan</i></h3>
+	<div class="output">
+		<img src="morph_output/me_to_jeremy.gif" alt="" class="demo3">
+		<p>Me morphing into Jeremy Lin</p>
+	</div>
+
+	<h3><i>Barack Clooney</i></h3>
+	<div class="output">
+		<img src="morph_output/george_to_obama.gif" alt="" class="demo3">
+		<p>George Clooney morphing into Barack Obama</p>
+	</div>
+	<br><br>
+
+	<h2>The "Mean face" of a Population</h2>
+	<p>Using the 'mid-way' image concept described above, we can compute the average of not just two images, but a whole dataset. For this project, we will use <a href="http://www2.imm.dtu.dk/~aam/datasets/datasets.html">this</a> sample database of Danish faces as our population. First, we will compute the average face shape of the subset of all Danish males (shown below).</p>
+
+	<h3><i>The Average Danish Male</i></h3>
+	<img src="danes_output/average_dane.jpg" alt="" class="demo">
+	<br><br>
+
+	<p>Humans equate symmetry with beauty, so naturally the average face will be quite attractive. Below are a few samples of individual faces from the dataset. As you can tell, each person is quite unique and look nothing like the average face. When we morph each of the faces into the average shape, we can see which features of the face are prevalent or not prevalent throughout the whole population.</p>
+
+	<h3><i>Sample Danish Males</i></h3>
+	<div class="output">
+		<img src="danes_output/dane_sample0.jpg" alt="" class="demo4">
+		<p>Same Male 1</p>
+	</div>
+	<div class="output">
+		<img src="danes_output/dane_sample1.jpg" alt="" class="demo4">
+		<p>Sample Male 2</p>
+	</div>
+	<div class="output">
+		<img src="danes_output/dane_sample2.jpg" alt="" class="demo4">
+		<p>Sample Male 3</p>
+	</div>
+
+	<h3><i>Sample Danish Males, Warped to the Average Shape</i></h3>
+	<div class="output">
+		<img src="danes_output/dane_sample0_warped.jpg" alt="" class="demo4">
+		<p>Same Male 1 (warped)</p>
+	</div>
+	<div class="output">
+		<img src="danes_output/dane_sample1_warped.jpg" alt="" class="demo4">
+		<p>Sample Male 2 (warped)</p>
+	</div>
+	<div class="output">
+		<img src="danes_output/dane_sample2_warped.jpg" alt="" class="demo4">
+		<p>Sample Male 3 (warped)</p>
+	</div>
+	<br>
+
+	<p>We can use the results from the Danish dataset to morph my face as well. Here are two results when I apply morphing techniques to my face and the average Danish male face.</p>
+	<br>
+
+	<h3><i>Warping My Face and the Average Danish Male Face</i></h3>
+	<div class="output">
+		<img src="danes_output/me_normal.jpg" alt="" class="demo5">
+		<p>My normal face</p>
+	</div>
+	<div class="output">
+		<img src="danes_output/average_dane.jpg" alt="" class="demo5">
+		<p>The average Danish male face</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="danes_output/me_warped.jpg" alt="" class="demo5">
+		<p>My face warped to the average Danish male face shape</p>
+	</div>
+	<div class="output">
+		<img src="danes_output/avg_dane_warped.jpg" alt="" class="demo5">
+		<p>The average Danish male face warped to my face shape</p>
+	</div>
+
+	<p>We can use these images to quantify the differences between our face shapes. My face is a bit wider and my eyes are a bit lower than the average Danish face. When I am morphed to the Danish shape, it is easy to see that my face appears thinner and my eyes stretch upwards. The opposite is true when the Danish face is morphed into my shape.</p>
+	<br><br>
+
+	<h2>Caricatures</h2>
+	<p>By extrapolating from the population mean we calculated before, we can exaggerate certain features and emphasize them as much as we want. We do this by finding the difference between our image shape and the mean shape, scaling it by a certain factor, and adding it back the the original mean shape. We extrapolate by setting the scaling factor (a) to be anything larger than 1, and the morph into the resulting shape will result in a caricature of our face. Here is the formula: caricature_shape = mean_shape + a * (image_shape - mean_shape). Below are some results of caricatures of my face using the mean Danish face.
+
+	<h3><i>Caricatures of My Face and the Average Dane</i></h3>
+	<div class="output">
+		<img src="danes_output/me_normal.jpg" alt="" class="demo4">
+		<p>My normal face</p>
+	</div>
+	<div class="output">
+		<img src="danes_output/me_caricature2.jpg" alt="" class="demo4">
+		<p>Caricature of my face with a = 2</p>
+	</div>
+	<div class="output">
+		<img src="danes_output/me_caricature3.jpg" alt="" class="demo4">
+		<p>Caricature of my face with a = 3</p>
+	</div>
+
+	<p>The differences between the faces that we mentioned before (wider face, lower eyes) are even more pronounced than they were before. As you can see, the caricature becomes increasingly exaggerated as the scaling factor increases.</p>
+	<br><br>
+
+	<h2>Bells and Whistles: Changing Gender and Ethnicity</h2>
+	<p>Now that we know how to do all of these cool things, let's apply our morphing techniques to generate some cool results! More specifically, we will see what I look like as an African-American female. Below are results of morphing just shape, color, and both. See which technique creates the most realistic output!</p>
+
+	<h3><i>Me and the Average African American Female</i></h3>
+	<div class="output">
+		<img src="morph_images/me_female.png" alt="" class="demo">
+		<p>My face</p>
+	</div>
+	<div class="output">
+		<img src="morph_images/female.jpg" alt="" class="demo">
+		<p>The average African American female</p>
+	</div>
+	<br>
+	<h3><i>Morphing our faces together</i></h3>
+	<div class="output">
+		<img src="morph_output/me_female_shape.jpg" alt="" class="demo">
+		<p>Morphing just my face shape to the average shape</p>
+	</div>
+	<div class="output">
+		<img src="morph_output/me_female_color.jpg" alt="" class="demo">
+		<p>Morphing just my face appearance to the average appearance</p>
+	</div>
+	<div class="output">
+		<img src="morph_output/me_female_both.jpg" alt="" class="demo">
+		<p>Morphing both color and shape to the average</p>
+	</div>
+
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

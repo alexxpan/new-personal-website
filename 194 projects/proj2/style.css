@@ -1,0 +1,30 @@
+.title {
+	text-align: center;
+}
+
+.name {
+	text-align: center;
+}
+
+.demo {
+	margin-right: 50px;
+	margin-top: 20px;
+	height: 250px;
+}
+
+.pinhole_image {
+	width: 500px;
+}
+
+.scene {
+	display: inline-block;
+	margin-right: 50px;
+}
+
+.light_painting_image {
+	width: 350px;
+}
+
+.pinhole_image2 {
+	width: 450px;
+}

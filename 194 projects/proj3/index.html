@@ -1,0 +1,543 @@
+<head>
+<title>Fun With Frequencies and Gradients</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+	<h1 class='title'>CS 194-26: Image Manipulation and Computational Photography</h1>
+	<br>
+	<h2 class='title'>Fun With Frequencies and Gradients</h2>
+	<p class='name'>By: Alex Pan</p>
+	<p class='name'><a href="http://inst.eecs.berkeley.edu/~cs194-26/fa17/hw/proj3/index.html" target="_blank">Project Description Here</a></p>
+
+	<br>
+
+	<h2>Image Sharpening</h2>
+	<p>As a warm-up for the rest of this project, we will start by performing a relatively simple process: sharpening images. To do this, we will use the unsharp mask filter technique:</p>
+	<img src="demo/unmask.jpg" alt="unmask" class="demo">
+	<p>The basic idea is to use a Gaussian filter to create a blurred image, which we subtract from the original image to get a 'mask'. This mask acts as a high pass filter which contains high frequency information, namely the edges and outlines in the picture. If we add this mask to the original image, it emphasizes the edges and makes the image appear sharper. 
+	<br><br>
+	For the images below, we used a sigma value of 5 for the Gaussian filter. The amount we want to sharpen the image is controlled by a variable alpha (a), which is the weight of the mask. As you'll be able to see below, a higher alpha corresponds to a greater sharpening effect. Past a certain point (around a = 2 or so for this image), the sharpening effect is too extreme and the output becomes distorted.</p>
+	<div class="output">
+		<img src="sharpen/a_0.jpg" alt="original" class="sharpen2">
+		<p>Original Image</p>
+	</div>
+	<div class="output">
+		<img src="sharpen/mask.jpg" alt="mask" class="sharpen2">
+		<p>Unsharp Mask</p>
+	</div>
+	<br>
+
+	<div class="output">
+		<img src="sharpen/a_05.jpg" alt="0.5" class="sharpen">
+		<p>a = 0.5 </p>
+	</div>
+	<div class="output">
+		<img src="sharpen/a_1.jpg" alt="1" class="sharpen">
+		<p>a = 1</p>
+	</div>
+	<div class="output">
+		<img src="sharpen/a_15.jpg" alt="1.5" class="sharpen">
+		<p>a = 1.5</p>
+	</div>
+	<div class="output">
+		<img src="sharpen/a_2.jpg" alt="2" class="sharpen">
+		<p>a = 2 (original)</p>
+	</div>
+	<div class="output">
+		<img src="sharpen/a_5.jpg" alt="5" class="sharpen">
+		<p>a = 5 (original)</p>
+	</div>
+	<div class="output">
+		<img src="sharpen/a_10.jpg" alt="10" class="sharpen">
+		<p>a = 10 (original)</p>
+	</div>
+	<br><br>
+
+	<h2>Hybrid Images</h2>
+	<p>Hybrid images are static images that change in interpretation as a function of the viewing distance. The basic idea is that high frequency tends to dominate perception when it is available, but, at a distance, only the low frequency (smooth) part of the signal can be seen. By blending the high frequency portion of one image with the low-frequency portion of another, you get a hybrid image that leads to different interpretations at different distances. 
+	<br><br>
+	To compute this, we do a low-pass filter on one image, a high-pass filter on the other image, and add them together. The sigma values for each image varies, so we manually pick the ones that produce the best overall result. The dog-bear hybrid is my favorite, so I included the Fourier analysis for that process. Also, we display the hybrid images at different sizes to simulate looking from closer or farther away.</p>
+
+	<h3><i>Dog-Bear</i></h3>
+	<div class="output">
+		<img src="hybrid_python/imgs/dog.jpg" alt="" class="hybrid">
+		<p>Dog (Original)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/dog-low.jpg" alt="" class="hybrid">
+		<p>Dog (Low Pass, sigma = 6)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/bear.jpg" alt="" class="hybrid">
+		<p>Bear (Original)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/bear-high.jpg" alt="" class="hybrid">
+		<p>Bear (High Pass, sigma = 5)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="hybrid_python/imgs/dog-bear.jpg" alt="" class="hybrid5">
+		<p>Hybrid Image (Close Up)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/dog-bear.jpg" alt="" class="hybrid2">
+		<p>Hybrid Image (Far Away)</p>
+	</div>
+	<br>
+
+	<h3><i>Dog-Bear (Fourier Analysis)</i></h3>
+	<div class="output">
+		<img src="hybrid_python/imgs/fourier-dog.jpg" alt="" class="hybrid">
+		<p>Dog (Original)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/fourier-dog-low.jpg" alt="" class="hybrid">
+		<p>Dog (Low Pass)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/fourier-bear.jpg" alt="" class="hybrid">
+		<p>Bear (Original)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/fourier-bear-high.jpg" alt="" class="hybrid">
+		<p>Bear (High Pass)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="hybrid_python/imgs/fourier-hybrid.jpg" alt="" class="hybrid">
+		<p>Hybrid Image</p>
+	</div>
+	<br>
+
+	<h3><i>Frisbee-Pizza</i></h3>
+	<div class="output">
+		<img src="hybrid_python/imgs/frisbee.jpg" alt="" class="hybrid">
+		<p>Frisbee (Original)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/frisbee-low.jpg" alt="" class="hybrid">
+		<p>Frisbee (Low Pass, sigma = 7)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/pizza.jpg" alt="" class="hybrid">
+		<p>Pizza (Original)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/pizza-high.jpg" alt="" class="hybrid">
+		<p>Pizza (High Pass, sigma = 2)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="hybrid_python/imgs/frisbee-pizza.jpg" alt="" class="hybrid5">
+		<p>Hybrid Image (Close Up)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/frisbee-pizza.jpg" alt="" class="hybrid2">
+		<p>Hybrid Image (Far Away)</p>
+	</div>
+	<br>
+
+	<h3><i>Jimmy-Beau</i></h3>
+	<div class="output">
+		<img src="hybrid_python/imgs/jimmy.jpg" alt="" class="hybrid3">
+		<p>Jimmy Mickle (Original)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/jimmy-low.jpg" alt="" class="hybrid3">
+		<p>Jimmy Mickle (Low Pass, sigma = 3)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/beau.jpg" alt="" class="hybrid3">
+		<p>Beau Kittredge (Original)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/beau-high.jpg" alt="" class="hybrid3">
+		<p>Beau Kittredge (High Pass, sigma = 4)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="hybrid_python/imgs/jimmy-beau.jpg" alt="" class="hybrid6">
+		<p>Hybrid Image (Close Up)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/jimmy-beau.jpg" alt="" class="hybrid2">
+		<p>Hybrid Image (Far Away)</p>
+	</div>
+	<br>
+
+	<h3><i>Car-Banana (Failure Case)</i></h3>
+	<p>For this specific hybrid image, the result did not turn out well at all. This is most likely due to the fact that the shapes of the objects are so different, and they don't overlap well. Both images are clearly visible in the high frequency domain, so there is not really an illusion that there is a car hidden in low frequencies (whereas the others have a better 'morphing' effect at different viewing distances).</p>
+	<div class="output">
+		<img src="hybrid_python/imgs/car.jpg" alt="" class="hybrid4">
+		<p>Car (Original)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/car-low.jpg" alt="" class="hybrid4">
+		<p>Car (Low Pass, sigma = 6)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/banana.jpg" alt="" class="hybrid4">
+		<p>Banana (Original)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/banana-high.jpg" alt="" class="hybrid4">
+		<p>Banana (High Pass, sigma = 5)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="hybrid_python/imgs/car-banana.jpg" alt="" class="hybrid3">
+		<p>Hybrid Image (Close Up)</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/car-banana.jpg" alt="" class="hybrid2">
+		<p>Hybrid Image (Far Away)</p>
+	</div>
+	<br>
+
+	<h2>Bells and Whistles: Adding Color to Hybrid Images</h2>
+	<p>As an extra feature, we will try adding color to the hybrid images to determine how it affects the output. There are three options we can do: color the low-frequency component, color the high-frequency component, or color both. We will show each of these methods on a few of the hybrid images above and assess the results. In both cases, we find that adding color to the hybrid images diminished the 'transformative' effect of the image.</p>	
+
+	<h3><i>Dog-Bear (Color)</i></h3>
+	<p>For this hybrid image, the results don't turn up so well because the high frequency image (bear) is mostly black and white and doesn't hold much color. Therefore, coloring the high frequency doesn't change much. Coloring the low frequency causes the 'dog' to show up very well in both frequency channels, which ruins the illusion. Coloring both has the same effect as coloring the low frequency image. We can see that the image with the best 'hybrid'-ness is the original (both images grayscale).</p>
+	<div class="output">
+		<img src="hybrid_python/imgs/dog-bear.jpg" alt="" class="hybrid">
+		<p>Both with no color</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/dog-color-bear-color.jpg" alt="" class="hybrid">
+		<p>Both with color</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/dog-color-bear.jpg" alt="" class="hybrid">
+		<p>Low frequency colored</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/dog-bear-color.jpg" alt="" class="hybrid">
+		<p>High frequency colored</p>
+	</div>
+	
+	<h3><i>Frisbee-Pizza (Color)</i></h3>
+	<p>With this hybrid image, the effects of colorization are clearer due to the vibrancy of both pictures. We still find that having a colored low-frequency is overpowering and ruins the illusion. Coloring the high frequency in this case does cause the pizza to pop, but it is visible enough as is and doesn't need to stand out more. Coloring both causes a bit of a confusing color mess. The original option with no color still works better than the rest.</p>
+	<div class="output">
+		<img src="hybrid_python/imgs/frisbee-pizza.jpg" alt="" class="hybrid">
+		<p>Both with no color</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/frisbee-color-pizza-color.jpg" alt="" class="hybrid">
+		<p>Both with color</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/frisbee-color-pizza.jpg" alt="" class="hybrid">
+		<p>Low frequency colored</p>
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/frisbee-pizza-color.jpg" alt="" class="hybrid">
+		<p>High frequency colored</p>
+	</div>
+	<br><br>
+
+	<h2>Gaussian and Laplacian Stacks</h2>
+	<p>In this part, we will implement a Gaussian and a Laplacian stack. In a stack, images are never downsampled so the results are all the same dimension as the original image, and can all be saved in one 3D matrix (if the original image was a grayscale image). To create the successive levels of the Gaussian stack, we just apply the Gaussian filter at each level, but do not subsample. To create the successive levels of the Laplacian Stack, we just subtrack the Gaussian filter at each level from the original image. For the two stacks we will showcase, we chose to have 5 levels in each stack. As you can see, the low frequency image is extraced at lower levels in the Gaussian stack, where the high frequency image becomes more visible as we go down the Laplacian stack.</p>
+
+	<h3><i>Salvador Dali's Lincoln</i></h3>
+	<h4>Gaussian Stack</h4>
+	<div class="output">
+		<img src="hybrid_python/imgs/lincoln-g-1.jpg" alt="" class="hybrid">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/lincoln-g-2.jpg" alt="" class="hybrid">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/lincoln-g-3.jpg" alt="" class="hybrid">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/lincoln-g-4.jpg" alt="" class="hybrid">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/lincoln-g-5.jpg" alt="" class="hybrid">
+	</div>
+	<h4>Laplacian Stack</h4>
+	<div class="output">
+		<img src="hybrid_python/imgs/lincoln-l-1.jpg" alt="" class="hybrid">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/lincoln-l-2.jpg" alt="" class="hybrid">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/lincoln-l-3.jpg" alt="" class="hybrid">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/lincoln-l-4.jpg" alt="" class="hybrid">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/lincoln-l-5.jpg" alt="" class="hybrid">
+	</div>
+	<br><br>
+	
+	<h3><i>Dog-Bear</i></h3>
+	<h4>Gaussian Stack</h4>
+	<div class="output">
+		<img src="hybrid_python/imgs/a-g-1.jpg" alt="" class="hybrid4">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/a-g-2.jpg" alt="" class="hybrid4">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/a-g-3.jpg" alt="" class="hybrid4">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/a-g-4.jpg" alt="" class="hybrid4">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/a-g-5.jpg" alt="" class="hybrid4">
+	</div>
+	<h4>Laplacian Stack</h4>
+	<div class="output">
+		<img src="hybrid_python/imgs/a-l-1.jpg" alt="" class="hybrid4">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/a-l-2.jpg" alt="" class="hybrid4">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/a-l-3.jpg" alt="" class="hybrid4">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/a-l-4.jpg" alt="" class="hybrid4">
+	</div>
+	<div class="output">
+		<img src="hybrid_python/imgs/a-l-5.jpg" alt="" class="hybrid4">
+	</div>
+	<br><br>
+
+	<h2>Multiresolution Blending</h2>
+	<p>In this part of the project, we will blend two images seamlessly using a multi resolution blending as described in the 1983 <a href="http://persci.mit.edu/pub_pdfs/spline83.pdf">paper</a> by Burt and Adelson. An image spline is a smooth seam joining two image together by gently distorting them. Multiresolution blending computes a gentle seam between the two images seperately at each band of image frequencies, resulting in a much smoother seam. Here is the general approach behind executing this concept, taken from page 230 of the paper referenced above.</p>
+	<img src="demo/blending.jpg" alt="blending" class="demo">
+	<p>One minor adjustment is that we will be using stacks instead of pyramids, but the algorithm above still applies. The gaussian filter is used to 'soften' the edges of the mask, so the seam between the two images will be gradual and not very stark. The high frequencies extracted by the laplacian filters on the images are combines with the blurred mask to smooth the differences out. If we sum the result at each level in the stack, we will get a resulting image with a much smoother transition from one image to another. Here are some results!</p>
+
+	<h3><i>Orapple</i></h3>
+	<div class="output">
+		<img src="blending/orange2.png" alt="orange" class="hybrid7">
+		<p>Orange</p>
+	</div>
+	<div class="output">
+		<img src="blending/apple2.png" alt="apple" class="hybrid7">
+		<p>Apple</p>
+	</div>
+	<div class="output">
+		<img src="blending/apple-mask.jpg" alt="" class="hybrid7">
+		<p>Mask</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="blending/apple-orange.jpg" alt="" class="hybrid5">
+		<p>Blended Image</p>
+	</div>
+	<br>
+
+	<h3><i>Olaf on the Beach</i></h3>
+	<div class="output">
+		<img src="blending/beach.jpg" alt="" class="hybrid">
+		<p>Beach</p>
+	</div>
+	<div class="output">
+		<img src="blending/olaf.jpg" alt="" class="hybrid">
+		<p>Olaf making a snow angel</p>
+	</div>
+	<div class="output">
+		<img src="blending/olaf-mask.jpg" alt="" class="hybrid">
+		<p>Mask</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="blending/olaf-beach.jpg" alt="" class="hybrid5">
+		<p>Blended Image</p>
+	</div>
+	<br>
+
+	<h3><i>Selena Gomez With Jonah Hill's Face</i></h3>
+	<div class="output">
+		<img src="blending/selena.jpg" alt="" class="hybrid">
+		<p>Selena Gomez</p>
+	</div>
+	<div class="output">
+		<img src="blending/jonah.jpg" alt="" class="hybrid">
+		<p>Jonah Hill</p>
+	</div>
+	<div class="output">
+		<img src="blending/jonah-mask.jpg" alt="" class="hybrid">
+		<p>Mask</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="blending/jonah-selena.jpg" alt="" class="hybrid5">
+		<p>Blended Image</p>
+	</div>
+	<br>
+
+	<h2>Bells and Whistles: Adding Color to Multiresolution Blending</h2>
+	<p>Just like we did for hybrid images, we will add color to our multiresolution blended images to see how color can enhance the effect of the image. We did this by processing each channel separately, and then adding them up at the end. With each colored image, we will analyze how the color affects the output.</p>
+
+	<h3><i>Olaf on the Beach: Colored</i></h3>
+	<p>The technique we used to blend the images does nothing to adjust colors, which is apparent in this example. Although the sand and snow are blended well, the result still looks abnormal because the stark difference of color. The blue-ish snow sticks out against the brown sand, so the colored image does not look as good as the grayscale.</p>
+	<div class="output">
+		<img src="blending/olaf-beach.jpg" alt="" class="hybrid3">
+		<p>Blended Image (No Color)</p>
+	</div>
+	<div class="output">
+		<img src="blending/olaf-beach-color.jpg" alt="" class="hybrid3">
+		<p>Blended Image (Color)</p>
+	</div>
+	<br>
+
+	<h3><i>Selena Gomez With Jonah Hill's Face: Colored</i></h3>
+	<p>This colored image turned out very nicely. The two people have similar skin tones, so it doesn't look too out of place when we mash their faces together. The multiresolution blending helped ease the transition between the two images, resulting in an output that looks almost like a real person.</p>
+	<div class="output">
+		<img src="blending/jonah-selena.jpg" alt="" class="hybrid3">
+		<p>Blended Image (No Color)</p>
+	</div>
+	<div class="output">
+		<img src="blending/jonah-selena-color.jpg" alt="" class="hybrid3">
+		<p>Blended Image (Color)</p>
+	</div>
+	<br><br>
+
+	<h2>Gradient Domain Fusion</h2>
+	<p>In this part of the project, we will use gradients to seamlessly blend an object or texture from a source image into a target image. Our eyes often care much more about the gradient of an image than the overall intensity, so we find values for the target pixels that maximally preserve the gradient of the source region without changing any of the background pixels. Note that we are making a deliberate decision to ignore the overall intensity: a green hat could turn red, but it will still look like a hat.
+	<br>
+
+	<h3><i>Toy Example</i></h3>
+	<p>In this toy example, we will use the x and y gradients from an image s, plus one pixel intensity, to reconstruct an image. This is just to help us understand how to formulate and compute least squares equations using gradients. The first step is to write the objective function as a set of least squares constraints in the standard matrix form: (Av-b)^2. Here, "A" is a set of equations to find x and y gradients, "v" is a vector of output variables, and "b" is a known vector consisting of information from the original image s. Once we solve this equation for v, we can show the reconstructed image and see that it is virtually identical to the original:</p>
+	<div class="output2">
+		<img src="poisson/toy/toy_in.jpg" alt="">
+		<p>Original image</p>
+	</div>
+	<div class="output">
+		<img src="poisson/toy/toy_out.jpg" alt="">
+		<p>Reconstructed image using gradients</p>
+	</div>
+	<p>To understand how closely the images match, we can compute the error (difference in pixels) between the two images. For this specific image, the error comes out to be: 0.030511221447. Because the error is near-zero, we know that the image was successfully reconstructed.</p>
+
+	<h2>Poisson Blending</h2>
+	<p>To actually blend images together, we will use a technique called 'Poisson blending' (detailed <a href="http://cs.brown.edu/courses/csci1950-g/asgn/proj2/resources/PoissonImageEditing.pdf">here</a>). Below, we will show the equation we are using. Given the pixel intensities of the source "s" and of the target "t", we want to solve a least squares equation for new intensity values "v" within the source region "S". Each "i" is a pixel in the source region "S", and each "j" is a 4-neighbor of "i". The first summation guides the gradient values to match the source region, and the second summation deals with pixels on the boundary.</p>	
+	<img src="demo/poisson.jpg" alt="" style="width:500px">
+	<p>Below are some examples of Poisson blending. We will compare the Poisson-blended images with the naive copy-and-paste method to see just how well the algorithm worked. It is a very powerful technique when used well, and results in some pretty cool pictures!</p>
+	<br>
+
+	<h3><i>Laying Out Into the Abyss</i></h3>
+	<div class="output">
+		<img src="poisson/gradient/imgs/layout-cliff/layout.jpg" alt="" class="hybrid">
+		<p>Source image</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/layout-cliff/cliff.jpg" alt="" class="hybrid">
+		<p>Target image</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="poisson/gradient/imgs/layout-cliff/naive.jpg" alt="" class="hybrid5">
+		<p>Naive copy-and-paste blend</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/layout-cliff/blended.jpg" alt="" class="hybrid5">
+		<p>Poisson blend</p>
+	</div>
+	<br>
+
+	<h3><i>An Otter's Day Off</i></h3>
+	<div class="output">
+		<img src="poisson/gradient/imgs/otter-tub/tub.jpg" alt="" class="hybrid">
+		<p>Source image</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/otter-tub/otter.jpg" alt="" class="hybrid">
+		<p>Target image</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="poisson/gradient/imgs/otter-tub/naive.jpg" alt="" class="hybrid5">
+		<p>Naive copy-and-paste blend</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/otter-tub/blended.jpg" alt="" class="hybrid5">
+		<p>Poisson blend</p>
+	</div>
+	<br>
+
+	<h3><i>See ya, Kim!</i></h3>
+	<div class="output">
+		<img src="poisson/gradient/imgs/kim-moon/moon.jpg" alt="" class="hybrid">
+		<p>Source image</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/kim-moon/kim.jpg" alt="" class="hybrid">
+		<p>Target image</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="poisson/gradient/imgs/kim-moon/naive.jpg" alt="" class="hybrid5">
+		<p>Naive copy-and-paste blend</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/kim-moon/blended.jpg" alt="" class="hybrid5">
+		<p>Poisson blend</p>
+	</div>
+	<br>
+
+	<h3><i>An Unfortunate Game of Catch: Failure Case</i></h3>
+	<p>Like most things, Poisson blending isn't a universal solution. In this particular case, we can see that the fish toy in the output image is all grayed-out and not well blended. This is due to the difference of color between the source and the target image: the fish toy is bright pink on a white background, and it is overlayed on a green patch of grass. As Poisson blending only looks at gradients, the side-effect is that drastic color differences between the source and the target cause wonky result colors. If we want good results, we should make sure that the source and target generally match in terms of color.</p>
+	<div class="output">
+		<img src="poisson/gradient/imgs/fish-dog/dog.jpg" alt="" class="hybrid">
+		<p>Source image</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/fish-dog/fish.jpg" alt="" class="hybrid">
+		<p>Target image</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="poisson/gradient/imgs/fish-dog/naive.jpg" alt="" class="hybrid5">
+		<p>Naive copy-and-paste blend</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/fish-dog/blended.jpg" alt="" class="hybrid5">
+		<p>Poisson blend</p>
+	</div>
+	<br>
+
+	<h2>A Comparison of Blending Techniques</h2>
+	<p>In this project, we have explored two different ways to blend images: using gradients to do Poisson blending and using Gaussian/Laplacian pyramids to do multi-resolution blending. So which one is better? Here, we will showcase the two techniques on the same image and evaluate them. The naive copy-and-paste method will be displayed as as baseline.</p>
+
+	<h3><i>Olaf on the Beach: Revisited</i></h3>
+	<div class="output">
+		<img src="poisson/gradient/imgs/olaf-beach/beach.jpg" alt="" class="hybrid">
+		<p>Source image</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/olaf-beach/olaf-original.jpg" alt="" class="hybrid">
+		<p>Target image</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/olaf-beach/naive.jpg" alt="" class="hybrid">
+		<p>Naive copy-and-paste blend</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="blending/olaf-beach-color.jpg" alt="" class="hybrid5">
+		<p>Multiresolution blend</p>
+	</div>
+	<div class="output">
+		<img src="poisson/gradient/imgs/olaf-beach/blended.jpg" alt="" class="hybrid5">
+		<p>Poisson blend</p>
+	</div>
+	
+	<p>Here, we took 'Olaf on the Beach' from the multiresolution blending section and applied Poisson blending to the same images. From the results, it is obvious that Poisson blending works much better in this case. The snow from Olaf's snow angel matches the sand and blends almost seamlessly, as opposed to sticking out. This is because Poisson blending adjusts the snow to match the gradient of the sand, creating a cohesive seam. In the case of multi-resolution blending, all we do is try to smooth out the edges of Olaf's cutout and place no emphasis on actually matching the two images. This results in a smooth transition, but lacks the realism.
+	<br><br>
+	So when would you use one technique or another? Multiresolution blending only produces good results when the backgrounds of the source and target image are very similar in color and texture. Otherwise, the transition between the two images will be abrupt to the viewer because the gradients and colors don't match at all. Poisson blending is useful for a much larger variety of images. It works especially well when we don't care about the color of the source image, because the source color often gets changed through the process. Obviously, Poisson blending also works well when the images are close in color, but it produces decent results even when the colors differ. As long as there isn't a drastic change (like from pink to green in our failure case), the blend will be quite nice.</p>
+
+
+
+
+
+</body>

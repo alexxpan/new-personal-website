@@ -1,0 +1,38 @@
+.title {
+	text-align: center;
+}
+
+.name {
+	text-align: center;
+}
+
+.output {
+	display: inline-block;
+	margin-right: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.demo {
+	width: 200px;
+}
+
+.demo2 {
+	height: 350px;
+}
+
+.demo3 {
+	height: 450px;
+}
+
+.demo4 {
+	width: 500px;
+}
+
+.demo5 {
+	width: 375px;
+}
+
+.demo6 {
+	width: 700px;
+}

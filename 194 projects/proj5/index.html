@@ -1,0 +1,148 @@
+<head>
+<title>Lightfield Cameras</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+	<h1 class='title'>CS 194-26: Image Manipulation and Computational Photography</h1>
+	<br>
+	<h2 class='title'>Lightfield Cameras:</h2>
+	<h3 class='title'>Depth Refocusing and Aperture Adjustment with Light Field Data</h3>
+	<p class='name'>By: Alex Pan</p>
+	<p class='name'><a href="http://inst.eecs.berkeley.edu/~cs194-26/fa17/hw/proj5/index.html" target="_blank">Project Description Here</a></p>
+	<br>
+
+	<h2>Overview</h2>
+	<p>In this project, we will use the concept of light field photography to demostrate cool postprocessing effects on images. As detailed in <a href="http://graphics.stanford.edu/papers/lfcamera/lfcamera-150dpi.pdf">this</a> paper, one way to capture a light field is to capture multiple images over a plane orthogonal to the optical axis. The light field is represented by a 4D space, and we can manipulate the 4th dimension in order to create complex effects.
+	<br><br>
+	*All of the image datasets used in our project come from the <a href="http://lightfield.stanford.edu/lfs.html">Stanford Light Field Archive</a>.</p>
+	<br>
+
+	<h2>Depth Refocusing</h2>
+	<p>As mentioned before, the datasets we are using consist of many images of the same scene taken at slightly different angles. Because the optical axis direction is the same throughout the images, objects that are far away from the camera remain in the same position. However, the position of nearby images varies quite a bit as the camera shifts. Knowing this, it makes sense that if we average all of the images together, the far objects will be in focus but the nearby images will be blurry.
+	<br><br>
+	Just doing a naive average of the images will only result in the far region of the image being clear. However, we can postprocess the iamges by shifting them so they line up at a certain point. If we average these shifted images, the point that we line up will be sharp and everywhere else will be blurry. This allows us to manually pick what depth of the scene to focus on, without changing any settings on the camera!
+	<br><br>
+	More specifically, this algorithm works by picking a reference image and calculating the relative difference (u, v) away from the reference image. We shift the sub-aperture image by a multiple (c) of (u, v), where c represents the direction that the focus shifts to. Here are some results calculated from images taken from the Stanford archive:
+	</p>
+	<br>
+
+	<h3><i>Chess</i></h3>
+	<div class="output">
+		<img src="demo/chess.png" alt="" class="demo">
+		<p>Original chess image</p>
+	</div>
+	<div class="output">
+		<img src="chess_refocus/chess_refocus.gif" alt="" class="demo">
+		<p>Gif of refocused images, from c = -0.5 to 0.5</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="chess_refocus/shifted-0.1.jpg" alt="" class="demo2">
+		<p>Focus shifted towards the back (c = -0.1)</p>
+	</div>
+	<div class="output">
+		<img src="chess_refocus/shifted0.2.jpg" alt="" class="demo2">
+		<p>Focus shifted in the middle (c = 0.2)</p>
+	</div>
+	<div class="output">
+		<img src="chess_refocus/shifted0.5.jpg" alt="" class="demo2">
+		<p>Focus shifted towards the front (c = 0.5)</p>
+	</div>
+	<br>
+
+	<h3><i>Jelly Beans</i></h3>
+	<div class="output">
+		<img src="demo/jelly_beans.png" alt="" class="demo">
+		<p>Original jelly beans image</p>
+	</div>
+	<div class="output">
+		<img src="jelly_beans_refocus/jelly_beans_refocus.gif" alt="" class="demo">
+		<p>Gif of refocused images, from c = -0.5 to 0.2</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="jelly_beans_refocus/shifted-0.45.jpg" alt="" class="demo2">
+		<p>Focus shifted towards the back (c = -0.45)</p>
+	</div>
+	<div class="output">
+		<img src="jelly_beans_refocus/shifted-0.35.jpg" alt="" class="demo2">
+		<p>Focus shifted in the middle (c = -0.35)</p>
+	</div>
+	<div class="output">
+		<img src="jelly_beans_refocus/shifted0.05.jpg" alt="" class="demo2">
+		<p>Focus shifted towards the front (c = 0.05)</p>
+	</div>
+	<br><br>
+
+	<h2>Aperture Adjustment</h2>
+	<p>Camera aperture refers to the hole in which light enters a camera, and can be adjusted to be larger or smaller. A smaller aperture means more of the image is in focus, while a larger aperture allows a smaller region of the scene to be clear. Averaging many images sampled over a grid perpendicular to the optical axis mimics a camera with a large aperture, since much of the scene is blurred out. Similarly, averaging fewer image gives a sharper image and mimics a smaller aperture.
+	<br><br>
+	To create the appearance of varying aperture sizes, all we have to do is specify the aperture size (a) and average all of the images within the region [reference_x_position - a, reference_y_position - a] and [reference_x_position + a, reference_y_position + a]. Below, we mimic various aperture sizes for the scenes pictured in the refocusing section of the project.
+	</p>
+	<br>
+	
+	<h3><i>Chess</i></h3>
+	<p>As we can see, the far objects in the scene remain in focus regardless of aperture size, because their position stays the same between pictures relative to the camera angle.</p>
+	<div class="output">
+		<img src="demo/chess.png" alt="" class="demo">
+		<p>Original chess image</p>
+	</div>
+	<div class="output">
+		<img src="chess_aperture/chess_aperture.gif" alt="" class="demo">
+		<p>Gif of different aperture sizes, from a = 0 to 8</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="chess_aperture/aperture_size1.jpg" alt="" class="demo3">
+		<p>Small aperture size (a = 1)</p>
+	</div>
+	<div class="output">
+		<img src="chess_aperture/aperture_size8.jpg" alt="" class="demo3">
+		<p>Large aperture size (a = 8)</p>
+	</div>
+	<br>
+
+	<h3><i>Jelly Beans</i></h3>
+	<p><p>Unlike the previous set of images, it appears that the closer images remain in focus while the far objects become blurrier as aperture size increases. This is likely because of the camera angle used to take the light field images — instead of keeping the position of the far images stable, the front jelly beans were used as an axis to move around.</p></p>
+	<div class="output">
+		<img src="demo/jelly_beans.png" alt="" class="demo">
+		<p>Original jelly beans image</p>
+	</div>
+	<div class="output">
+		<img src="jelly_beans_aperture/jelly_beans_aperture.gif" alt="" class="demo">
+		<p>Gif of different aperture sizes, from a = 0 to 8</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="jelly_beans_aperture/aperture_size1.jpg" alt="" class="demo3">
+		<p>Small aperture size (a = 1)</p>
+	</div>
+	<div class="output">
+		<img src="jelly_beans_aperture/aperture_size8.jpg" alt="" class="demo3">
+		<p>Large aperture size (a = 8)</p>
+	</div>
+	<br><br>
+
+	<h2>Summary</h2>
+	<p>In this project, I learned a lot about how light fields can be represented in real life. Obviously, cameras that take still pictures can't represent all of the dimensions of a light field, but we can work around this by taking multiple images of the same scene from different scenes. Because light fields hold much more information than a single image, we can postprocess the scene to simulate different camera effects. It was cool to see how settings like focus depth and aperture could be artificially changed without using the physical camera at all, and I'm excited to see how more advanced cameras and techniques allow us to store even more information. Is it possible to encode all of the visual information in our physical world? And if so, how will this change our perception of reality?</p>
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

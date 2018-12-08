@@ -1,0 +1,259 @@
+<head>
+<title>Feature Matching for Autostitching</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+	<h1 class='title'>CS 194-26: Image Manipulation and Computational Photography</h1>
+	<br>
+	<h2 class='title'>Feature Matching for Autostitching</h2>
+	<h3 class='title'>Part 2 of a Larger Project</h3>
+	<p class='name'>By: Alex Pan</p>
+	<p class='name'><a href="http://inst.eecs.berkeley.edu/~cs194-26/fa17/hw/proj6/partB.html" target="_blank">Project Description Here</a></p>
+	<br>
+
+	<h2>Overview</h2>
+	<p>In the previous part of this project, we explored how homographies can be used to warp images to a certain perspective. We applied this technique to a set of pictures of the same scene with different perspectives, allowing us to stich together and create panoramas. However, this involved manually selecting correspondence points between the images. In this part of the project, we will explore how we can automatically match features between images to stich mosiacs together automatically. Our approach is based on <a href="http://inst.eecs.berkeley.edu/~cs194-26/fa17/Papers/MOPS.pdf">this</a> paper.</p>
+	<br>
+
+	<h2>Interest Point Detection</h2>
+	<p>We choose to define interest points as Harris corners, which are based off of corner strength (differences in pixel intensity within a neighborhood). Just returning all of the Harris corners gives us way too many points, however, so we filter it down. The process we use to filter Harris points is called Adaptive Non-Maximal Suppression (ANMS), which not only narrows down the points but also makes sure they are distributed evenly throughout the image.</p>
+	<p>ANMS works by assigning a radius to each corner, which limits the feature points that exist in each area of the picture. To find the radius, we comparing every interest point to every other interest point in the image. The radius is determined by the minimum distance where that one point's corner strength is significantly more than every other point.</p>
+	<p>Detecting all Harris points on our images gives us thousands and thousands of points. By using ANMS, we can narrow this down to 500 points, which we will use to actually match features between images. Below, we show these results for a sample set of images.</p>
+	
+	<h3><i>Haste Street</i></h3>
+	<div class="output">
+		<img src="mosaics/street_1.jpg" alt="" class="demo">
+		<p>Original Image 1</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_2.jpg" alt="" class="demo">
+		<p>Original Image 2</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/street_1_corners.png" alt="" class="demo">
+		<p>Image 1 (Harris Corners)</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_2_corners.png" alt="" class="demo">
+		<p>Image 2 (Harris Corners)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/street_1_ANMS.png" alt="" class="demo">
+		<p>Image 1 (ANMS filtering)</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_2_ANMS.png" alt="" class="demo">
+		<p>Image 2 (ANMS filtering)</p>
+	</div>
+	<br><br>
+
+	<h2>Feature Extraction</h2>
+	<p>Now that we have located where the most prevalent features are on each image. we have to extract that actual feature that each point corresponds to. To do this, we take the 40 x 40 patch around each feature point. Because the same feature in different images won't exactly match up due to different perspectives and noise, we want to allow for some variation around the feature itself. To make the patches less sensitive to the exact feature location, we sample the pixels at a lower frequency than what the interest points are originally at. Given a 40 x 40 patch, we apply a Gaussian filter to it and then sample every 5th row and column to create a, 8 x 8 patch. This is what we will use when we actually look to match features between images.</p>
+	<p>Below, we show what an arbitrary feature patch looks like, taken from the images above.</p>
+
+	<div class="output">
+		<img src="mosaics/street_feature_40.png" alt="" class="demo">
+		<p>40 x 40 feature patch</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_feature_8.png" alt="" class="demo">
+		<p>8 x 8 feature patch</p>
+	</div>
+	<br><br>
+
+	<h2>Feature Matching</h2>
+	<p>Given feature patches for each image, we need to find which features corresponding to which between images. To do this, we compare every feature in one image to every feature in the other image. For each feature pair, we calculate the difference between the 8 x 8 features by finding the sum of the Euclidian distances between every corresponding pixel. For a given feature, we sort these results by smallest distance first, and call the first two results nn1 and nn2 (nn = nearest neighbor). If the ratio nn1/nn2 is smaller than a certain threshold, we consider nn1 'good enough' and use it as the feature corresponding to the given feature we are examining. This works by assuming that if the next closest match is very different from the closest match, the closest match is probably correct.</p>
+	<p>After performing these computations on our street images above, we are left with the matching features between both images.</p>
+	
+	<div class="output">
+		<img src="mosaics/street_1_matches.png" alt="" class="demo">
+		<p>Image 1 feature matches</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_2_matches.png" alt="" class="demo">
+		<p>Image 2 feature matches</p>
+	</div>
+	<br><br>
+
+	<h2>Computing Homographies Using RANSAC</h2>
+	<p>Not all of the matches computed above are correct right off the bat; in some cases, there are random points that clearly don't correspond with anything in the other image. To throw away the incorrect matches, we use a technique called RANSAC (random sample consensus).</p>
+	<p>RANSAC involves randomly selecting 4 random points and computing a homography from them. We then apply this homography to all of the feature points in one image. For each computed point, we calculate the distance between it and the actual corresponding point it was matched to before. If this distance is small enough, it is classified as an inlier. We repeat this process thousands of times, keeping track of the inlier set for each 4 random points used in the homography. The largest inlier set is used to compute the final, actual homography.</p>
+	<p>Below, we show the inlier sets that were used to create the final homography. Because we did so many iterations of RANSAC, you can see that every feature between the images is correctly matched.</p>
+
+	<div class="output">
+		<img src="mosaics/street_1_inliers.png" alt="" class="demo">
+		<p>Image 1 inliers</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_2_inliers.png" alt="" class="demo">
+		<p>Image 2 feature inliers</p>
+	</div>
+	<br><br>
+
+	<h2>Warping Images and Stitching Mosaics</h2>
+	<p>We've automated the process of picking correspondence points, so all that's left to do is to warp each image based on the homography, and blend them together. All of this is already done in the first part of this project, so check it out for more details on how we do this.</p>
+	<p>Here are a few panoramas we autostiched together! As you can see, they look even better than the handmade ones from the previous part of the project! Beacuse the features were matched exactly to the piel, there is no ghosting in the overlapping regions. It's unsurprising that computers prove to be more precise than humans.</p>
+
+	<h3><i>Haste Street</i></h3>
+	<div class="output">
+		<img src="mosaics/street_1.jpg" alt="" class="demo">
+		<p>Original Image 1</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_2.jpg" alt="" class="demo">
+		<p>Original Image 2</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/street_mosaic.jpg" alt="" class="demo2">
+		<p>Full Mosaic</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/street_mosaic_cropped.jpg" alt="" class="demo2">
+		<p>Mosaic (Cropped)</p>
+	</div>
+	<br>
+
+	<h3><i>Underhill Field</i></h3>
+	<div class="output">
+		<img src="mosaics/underhill_1.jpg" alt="" class="demo">
+		<p>Original Image 1</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/underhill_2.jpg" alt="" class="demo">
+		<p>Original Image 2</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/underhill_mosaic.jpg" alt="" class="demo2">
+		<p>Full Mosaic</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/underhill_mosaic_cropped.jpg" alt="" class="demo2">
+		<p>Mosaic (Cropped)</p>
+	</div>
+	<br>
+
+	<h3><i>A Small Garden of Flowers</i></h3>
+	<div class="output">
+		<img src="mosaics/flowers_1.jpg" alt="" class="demo">
+		<p>Original Image 1</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/flowers_2.jpg" alt="" class="demo">
+		<p>Original Image 2</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/flowers_mosaic.jpg" alt="" class="demo2">
+		<p>Full Mosaic</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/flowers_mosaic_cropped.jpg" alt="" class="demo2">
+		<p>Mosaic (Cropped)</p>
+	</div>
+	<br>
+
+	<h2>Conclusion</h2>
+	<p>The coolest part about this project was seeing how we could automatically correct mistakes that were made when features were being matched. I was a bit skeptical early on about the matching, when I saw a few random points in the middle of nowhere being labeled as corresponding features. It was very interesting to see how setting thresholds and running RANSAC many times could rule out all of these points.</p>
+	<p>Here's an interesting point to consider regarding this project. The automatic feature detection and matching that we did involved many complex mathematical concepts, not to mention a large amount of difficult coding. The runtime of the code is also a significant concern. Improvements such as vectorization and more processing power can ease some of these issues, but we are trying to automate what is essentially a 15 second task for a real human. If we consider all of the factors that go into automation, at what point do the costs outweight the benefits? Automation is obviously worth it in many situations (especially this case, since we were able to get rid of ghosting artifacts), but it's important to keep perspective.</p>
+	<br>
+	<h2>Bells and Whistles</h2>
+	<h3><i>Multiscale Procession</i></h3>
+	<p>One of the aspects in the paper that we didn't implement was using multi-scale Harris corners for feature points. Our version just found Harris corners in the original scale image, but doing this at multiple levels increases robustness. To add this to our algorithm, we create a 5-level Gaussian pyramid for each image. We then run the Harris corner detector at each level to find features that may have been obscured at the original scale.</p>
+	<p>Unfortunately, for the images we used, multi-scale processing didn't pick up any new features and was basically equivalent to single-scale processing. The features and matching features at each level ended up being th same as the ones in the single-scale version. Nevertheless, here are the multi-scale points at each level for one of our images. We also show the result panorama from using multi-scale on the set of images.</p>
+	<div class="output">
+		<img src="mosaics/street_1_pyramid_1.png" alt="" class="demo3">
+		<p>Harris corners (Level 1)</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_1_pyramid_2.png" alt="" class="demo3">
+		<p>Harris corners (Level 2)</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_1_pyramid_3.png" alt="" class="demo3">
+		<p>Harris corners (Level 3)</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_1_pyramid_4.png" alt="" class="demo3">
+		<p>Harris corners (Level 4)</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_1_pyramid_5.png" alt="" class="demo3">
+		<p>Harris corners (Level 5)</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/street_mosaic_cropped.jpg" alt="" class="demo2">
+		<p>Mosaic with multi-level processing (Cropped)</p>
+	</div>
+	<br>
+
+	<h3><i>Automatic Panorama Recognition</i></h3>
+	<p>As another extra, we implement panorama recognition. Given an unordered set of images, some of which might form panoramas, we are automatically discovering and stitching these panoramas together. To do this, we iterate through every possible pair of images given the set of images. For each pair, we go through the processes that we did earlier in the project: we find Harris corners, use AMNS to filter, detect features, and find matching features. In order to determine whether or not this pair of images actually form a panorama, we check to see how many features actually match between them. If the number of matching feature is higher than a certain threshold, we determine that they can be stitched together into a panorama and add the tuple to a list.</p>
+	<p>Here are the input images we fed the recognition algorithm, in the order we passed them in:</p>
+	<div class="output">
+		<img src="mosaics/flowers_1.jpg" alt="" class="demo4">
+		<p>flowers_1.jpg</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_2.jpg" alt="" class="demo4">
+		<p>street_2.jpg</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/smiley.jpg" alt="" class="demo4">
+		<p>smiley.jpg</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/street_1.jpg" alt="" class="demo4">
+		<p>street_1.jpg</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/flowers_2.jpg" alt="" class="demo4">
+		<p>flowers_2.jpg</p>
+	</div>
+
+	<p>Here is the list of recognized panorama tuples that were returned: <br><br><b>[('flowers_1.jpg', 'flowers_2.jpg'), ('street_2.jpg', 'street_1.jpg'), ('street_1.jpg', 'street_2.jpg'), ('flowers_2.jpg', 'flowers_1.jpg')]</b></p>
+
+	<p>And finally, here are the panoramas generated from each of the recognized panorama tuples:</p>
+	<div class="output">
+		<img src="mosaics/recognized_1.jpg" alt="" class="demo2">
+		<p>('flowers_1.jpg', 'flowers_2.jpg')</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/recognized_2.jpg" alt="" class="demo2">
+		<p>('street_2.jpg', 'street_1.jpg')</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/recognized_3.jpg" alt="" class="demo2">
+		<p>('street_1.jpg', 'street_2.jpg')</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="mosaics/recognized_4.jpg" alt="" class="demo2">
+		<p>('flowers_2.jpg', 'flowers_1.jpg')</p>
+	</div>
+	<br>
+	<p>Analyzing these results, we can see that we were actually able to recognize the panoramic images. One interesting thing to note was that we were able to recognize both orderings of a pair of images. In our original panoramas, we arbitrarily chose to align the left image to the right image. However, with our recognition algorithm, we create a panorama with the right aligned to the left as well as the left aligned to the right.</p>
+	<p>As far as limitations go, one obvious one is that this only works for 2-image panoramas; it can't pick out three or more images that are part of the same panorama. Also, we have to use the same thresholds for feature detection and matching for all of the images. If some of the images were very different contrast-wise, we might run into trouble picking thresholds that would work correctly for every image. But, for our purposes, this version is good enough to work!</p>
+
+</body>
+
+
+
+
+
+
+
+
+
+
+

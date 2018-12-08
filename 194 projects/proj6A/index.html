@@ -1,0 +1,165 @@
+<head>
+<title>Image Warping and Mosaicing</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+	<h1 class='title'>CS 194-26: Image Manipulation and Computational Photography</h1>
+	<br>
+	<h2 class='title'>Image Warping and Moasiacing</h2>
+	<h3 class='title'>Part 1 of a Larger Project</h3>
+	<p class='name'>By: Alex Pan</p>
+	<p class='name'><a href="http://inst.eecs.berkeley.edu/~cs194-26/fa17/hw/proj6/partA.html" target="_blank">Project Description Here</a></p>
+	<br>
+
+	<h2>Overview</h2>
+	<p>In this project, we are exploring the different applications of image warping and the cool effects it can lead to. More specifically, we look at how we can post-process images to manipulate the viewing perspective.</p>
+
+	<h2>Homographies</h2>
+	<p>In order to warp our images, we use what are called 'homographies': an isomorphism of projective spaces. Luckily, this complicated concept can be generalized into a set of parameters that lets us transform between a pair of images. The transformation can be written out as p' = Hp, where H (the homography) is a 3x3 matric with 8 degrees of freedom. One way to recover the homography is to create a set of (p', p) pairs of corresponding points that map what the warp should look like. If we have at least 4 pairs of point correspondences, then we can solve for the matrix H that will let us transform one image to another. Below, we will see this equation written out:</p>
+	<div class="output">
+		<img src="demo/homography.png" alt="" class="demo">
+	</div>
+
+	<h2>Image Warping and Rectification</h2>
+	<p>Given the homography, we can warp the image by appling the transformation matrix to each of the image's points. To show that our warping is working correctly, we use it to 'rectify' images. By this, we mean taking pictures and warping them so that the image subject is frontal-parallel. Here are a few examples of this:</p>
+
+	<h3><i>Desktop Monitor</i></h3>
+	<div class="output">
+		<img src="rectify/monitor.jpg" alt="" class="demo2">
+		<p>Original Image</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="rectify/rectified_monitor.jpg" alt="" class="demo2">
+		<p>Rectified Image</p>
+	</div>
+	<div class="output">
+		<img src="rectify/rectified_monitor_cropped.jpg" alt="" class="demo2">
+		<p>Rectified Image (Cropped)</p>
+	</div>
+	<br>
+
+	<h3><i>Poster of Kyoto</i></h3>
+	<div class="output">
+		<img src="rectify/kyoto.jpg" alt="" class="demo3">
+		<p>Original Image</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="rectify/rectified_kyoto.jpg" alt="" class="demo3">
+		<p>Rectified Image</p>
+	</div>
+	<div class="output">
+		<img src="rectify/rectified_kyoto_cropped.jpg" alt="" class="demo3">
+		<p>Rectified Image (Cropped)</p>
+	</div>
+	<br>
+
+	<h3><i>Ski Slope Sign</i></h3>
+	<div class="output">
+		<img src="rectify/ski.jpg" alt="" class="demo3">
+		<p>Original Image</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="rectify/rectified_ski.jpg" alt="" class="demo3">
+		<p>Rectified Image</p>
+	</div>
+	<div class="output">
+		<img src="rectify/rectified_ski_cropped.jpg" alt="" class="demo4">
+		<p>Rectified Image (Cropped)</p>
+	</div>
+	<br>
+
+	<h2>Mosaicing</h2>
+	<p>Now that we've successfully warped images to match whatever perspective we desire, we can create cool outputs like mosaics and panoramas. This consists of shooting multiple photos from the same point of view but with different view directions, followed by warping all of them to the center image's project plane. If we add all of these images up, we will be left with one cohesive image that spans a very large angle! To smooth out the transition between images, we use linear blending in the overlapping areas. We can't completely get rid of the artifacts between images with blending, but the output is still very smooth. There is also some amount of ghosting in the overlap areas, because correspondence points were picked by hand so the images don't line up exactly. Here are some result mosaics computed from pictures around and outside of the Berkeley campus!</p>
+
+	<h3><i>A View of Berkeley From Above</i></h3>
+	<div class="output">
+		<img src="mosaics/units_1.jpg" alt="" class="demo5">
+		<p>Left</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/units_2.jpg" alt="" class="demo5">
+		<p>Center (Perspective)</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/units_3.jpg" alt="" class="demo5">
+		<p>Right</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="demo/units_mosaic.jpg" alt="" class="demo6">
+		<p>Full Mosaic</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="demo/units_mosaic_cropped.jpg" alt="" class="demo6">
+		<p>Mosaic (Cropped)</p>
+	</div>
+	<br>
+
+	<h3><i>The Hills of Berkeley</i></h3>
+	<div class="output">
+		<img src="mosaics/balcony_1.jpg" alt="" class="demo5">
+		<p>Left</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/balcony_2.jpg" alt="" class="demo5">
+		<p>Center (Perspective)</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/balcony_3.jpg" alt="" class="demo5">
+		<p>Right</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="demo/balcony_mosaic.jpg" alt="" class="demo6">
+		<p>Full Mosaic</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="demo/balcony_mosaic_cropped.jpg" alt="" class="demo6">
+		<p>Mosaic (Cropped)</p>
+	</div>
+	<br>
+
+	<h3><i>San Pablo Park (Outside of Campus)</i></h3>
+	<div class="output">
+		<img src="mosaics/park_1.jpg" alt="" class="demo5">
+		<p>Left</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/park_2.jpg" alt="" class="demo5">
+		<p>Center (Perspective)</p>
+	</div>
+	<div class="output">
+		<img src="mosaics/park_3.jpg" alt="" class="demo5">
+		<p>Right</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="demo/park_mosaic.jpg" alt="" class="demo6">
+		<p>Full Mosaic</p>
+	</div>
+	<br>
+	<div class="output">
+		<img src="demo/park_mosaic_cropped.jpg" alt="" class="demo6">
+		<p>Mosaic (Cropped)</p>
+	</div>
+	<br>
+
+	<h3>Summary</h3>
+	<p>I really enjoyed this project, because I was able to implement a feature (panoramic images) that is actually implemented in a lot of real phones and cameras! The most important thing I learned about this project was the importance of precision in picking correspondence points. Doing it by hand is not very exact, and being just a little bit off can cause significant blur or ghosting in the output image.</p>
+
+
+
+</body>
+
+
+
+
+
+
+

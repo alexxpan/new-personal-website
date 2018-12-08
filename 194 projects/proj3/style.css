@@ -1,0 +1,61 @@
+.title {
+	text-align: center;
+}
+
+.name {
+	text-align: center;
+}
+
+.demo {
+	width: 700px;
+}
+
+.sharpen {
+	width: 300px;
+}
+
+.sharpen2 {
+	width: 400px;
+}
+
+.output {
+	display: inline-block;
+	margin-right: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.output2 {
+	display: inline-block;
+	margin-right: 150px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.hybrid {
+	height: 200px;
+}
+
+.hybrid2 {
+	width: 50px;
+}
+
+.hybrid3 {
+	height: 300px;
+}
+
+.hybrid4 {
+	height: 150px;
+}
+
+.hybrid5 {
+	height: 350px;
+}
+
+.hybrid6 {
+	height: 400px;
+}
+
+.hybrid7 {
+	height: 250px;
+}
